@@ -13,7 +13,11 @@ pip install -e .
 
 Download and build visualization tool
 ```
+<<<<<<< HEAD
 cd scripts
+=======
+cd script
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
 bash build.sh #build C++ code for visualization
 bash download.sh #download dataset
 ```

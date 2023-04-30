@@ -98,7 +98,11 @@ classifier.cuda()
 num_batch = len(dataset) / opt.batchSize
 
 for epoch in range(opt.nepoch):
+<<<<<<< HEAD
     #scheduler.step()
+=======
+    scheduler.step()
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
     for i, data in enumerate(dataloader, 0):
         points, target = data
         target = target[:, 0]
@@ -130,8 +134,12 @@ for epoch in range(opt.nepoch):
             print('[%d: %d/%d] %s loss: %f accuracy: %f' % (epoch, i, num_batch, blue('test'), loss.item(), correct.item()/float(opt.batchSize)))
 
     torch.save(classifier.state_dict(), '%s/cls_model_%d.pth' % (opt.outf, epoch))
+<<<<<<< HEAD
 scheduler.step()
     
+=======
+
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
 total_correct = 0
 total_testset = 0
 for i,data in tqdm(enumerate(testdataloader, 0)):

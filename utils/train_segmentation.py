@@ -7,7 +7,11 @@ import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
 from pointnet.dataset import ShapeNetDataset
+<<<<<<< HEAD
 from pointnet.model_test import PointNetDenseCls, feature_transform_regularizer
+=======
+from pointnet.model import PointNetDenseCls, feature_transform_regularizer
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
 import torch.nn.functional as F
 from tqdm import tqdm
 import numpy as np
@@ -56,9 +60,15 @@ testdataloader = torch.utils.data.DataLoader(
     shuffle=True,
     num_workers=int(opt.workers))
 
+<<<<<<< HEAD
 print(len(dataset), len(test_dataset))#shapenet 2658 704
 num_classes = dataset.num_seg_classes
 print('classes', num_classes)#shapenet chair 4
+=======
+print(len(dataset), len(test_dataset))
+num_classes = dataset.num_seg_classes
+print('classes', num_classes)
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
 try:
     os.makedirs(opt.outf)
 except OSError:
@@ -78,7 +88,11 @@ classifier.cuda()
 num_batch = len(dataset) / opt.batchSize
 
 for epoch in range(opt.nepoch):
+<<<<<<< HEAD
 #scheduler.step()  
+=======
+    scheduler.step()
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
     for i, data in enumerate(dataloader, 0):
         points, target = data
         points = points.transpose(2, 1)
@@ -113,8 +127,12 @@ for epoch in range(opt.nepoch):
             print('[%d: %d/%d] %s loss: %f accuracy: %f' % (epoch, i, num_batch, blue('test'), loss.item(), correct.item()/float(opt.batchSize * 2500)))
 
     torch.save(classifier.state_dict(), '%s/seg_model_%s_%d.pth' % (opt.outf, opt.class_choice, epoch))
+<<<<<<< HEAD
 scheduler.step()
     
+=======
+
+>>>>>>> f0c2430b0b1529e3f76fb5d6cd6ca14be763d975
 ## benchmark mIOU
 shape_ious = []
 for i,data in tqdm(enumerate(testdataloader, 0)):
