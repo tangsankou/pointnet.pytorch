@@ -7,24 +7,24 @@ import numpy as np
 import torch.nn.functional as F
 import json
 
-a =np.array([[[1,2,3],[4,5,6]],[[7,8,9][10,11,12]],[[2,4,6],[1,3,5]]])
-print(a[:,[0,2]])
+""" a =np.array([[[1,2,3],[4,5,6]],[[7,8,9][10,11,12]],[[2,4,6],[1,3,5]]])
+print(a[:,[0,2]]) """
 
-""" fname_train = '/root/pointnet.pytorch/scripts/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_train_file_list.json' 
+fname_train = '/root/autodl-tmp/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_train_file_list.json' 
 filelist_train = json.load(open(fname_train, 'r'))
 i=0
 for file in filelist_train:
     i=i+1
     _, category, uuid = file.split('/')
-print(i)
+print("len(train):",i)#12137
 
-fname_test = '/root/pointnet.pytorch/scripts/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_test_file_list.json' 
+fname_test = '/root/autodl-tmp/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_test_file_list.json' 
 filelist_test = json.load(open(fname_test, 'r'))
 j=0
 for file in filelist_test:
     j=j+1
-    __, categoryy, uuidd = file.split('/')
-print(j) """
+    _, category, uidd = file.split('/')
+print("len(test):",j)#2874
 
 """ x = torch.rand(6,4,4)
 print("x.size:",x.size())
