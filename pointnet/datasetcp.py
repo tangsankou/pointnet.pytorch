@@ -54,6 +54,98 @@ def gen_modelnet_id(root):
             f.write('{}\t{}\n'.format(classes[i], i))
 
 class ShapeNetDataset(data.Dataset):
+    """ def __init__(self, root, npoints=2500, classification=False,
+                 class_choice=None, split="train", data_augmentation=False):
+        
+        self.root = root           # 数据集路径
+        self.npoints = npoints     # 采样点数
+        self.data_augmentation = data_augmentation     # 是否使用法线信息
+        self.category = {}         # 类别所对应文件夹
+        # shapenet有16个大类，每个大类有一些部件，
+        # 例如飞机 'Airplane': [0, 1, 2, 3] 其中标签为0 1 2 3 的四个小类都属于飞机这个大类
+        self.seg_classes = {'Earphone': [16, 17, 18], 'Motorbike': [30, 31, 32, 33, 34, 35], 'Rocket': [41, 42, 43],
+                            'Car': [8, 9, 10, 11], 'Laptop': [28, 29], 'Cap': [6, 7], 'Skateboard': [44, 45, 46],
+                            'Mug': [36, 37], 'Guitar': [19, 20, 21], 'Bag': [4, 5], 'Lamp': [24, 25, 26, 27],
+                            'Table': [47, 48, 49], 'Airplane': [0, 1, 2, 3], 'Pistol': [38, 39, 40],
+                            'Chair': [12, 13, 14, 15], 'Knife': [22, 23]}
+        
+        
+        # 读取 类别所对应的文件夹信息，即该文件synsetoffset2category.txt
+        with open(self.root+"/synsetoffset2category.txt") as f:
+            for line in f.readlines():
+                cate,file = line.strip().split()
+                self.category[cate] = file
+        # print(self.category)   # {'Airplane': '02691156', 'Bag': '02773838', 'Cap': '02954340', 'Car': '02958343', 'Chair': '03001627', 'Earphone': '03261776', 'Guitar': '03467517', 'Knife': '03624134', 'Lamp': '03636649', 'Laptop': '03642806', 'Motorbike': '03790512', 'Mug': '03797390', 'Pistol': '03948459', 'Rocket': '04099429', 'Skateboard': '04225987', 'Table': '04379243'}
+        
+        # 将类别字符串与数字对应
+        self.category2id = {}
+        i = 0
+        for item in self.category:
+            self.category2id[item] = i
+            i = i + 1
+        
+        
+        # class_choice进行类别选择
+        if class_choice:     # class_choice 是 list类型
+            for item in self.category:
+                if item not in class_choice:     # 若 类别 不在class_choice中，则删除
+                    self.category.pop(item)
+        
+        
+        # 存储类别对应的点云数据文件
+        self.datapath = []           # 存储形式：[ (类别, 数据路径), (类别, 数据路径), ... ]
+        
+        # 遍历点云文件，进行存储
+        for item in self.category:
+            filesName = [f[:-4] for f in os.listdir(self.root+"/"+self.category[item])]    # 把该类别文件夹下的所有文件遍历出来，之后对其进行判断（属于训练集、验证集、测试集、）
+            
+            # 抓取部分数据（训练集、验证集、测试集）
+            if split=="train":
+                with open(self.root+"/"+"train_test_split"+"/"+"shuffled_train_file_list.json") as f:
+                    filename = [f.split("/")[-1] for f in json.load(f)]
+                    for file in filesName:
+                        if file in filename:   # 若该类别文件夹中的数据在训练集中，则存储
+                            self.datapath.append((item, self.root+"/"+self.category[item]+"/"+file+".txt"))
+            elif split=="test":
+                with open(self.root+"/"+"train_test_split"+"/"+"shuffled_test_file_list.json") as f:
+                    filename = [f.split("/")[-1] for f in json.load(f)]
+                    for file in filesName:
+                        if file in filename:   # 若该类别文件夹中的数据在测试集中，则存储
+                            self.datapath.append((item, self.root+"/"+self.category[item]+"/"+file+".txt"))
+        
+        
+    def __getitem__(self, index):
+        '''
+            :return: 点云数据, 大类别, 每个点的语义（大类别中的小类别）
+        '''
+        cls = self.datapath[index][0]     # 类别字符串
+        cls_index = self.category2id[cls] # 类被字符串所对应的数字
+        path = self.datapath[index][1]    # 点云数据存储的路径
+        data = np.loadtxt(path)           # 点云数据
+        
+        point_data = None  
+        if self.normal_use:   # 是否使用法线信息
+            point_data = data[:, 0:-1]
+        else:
+            point_data = data[:, 0:3]
+        
+        seg = data[:, -1]     # 语义信息
+        
+        
+        # 对数据进行重新采样
+        choice = np.random.choice(len(seg), self.npoints)
+        point_data = point_data[choice, :]
+        seg = seg[choice]
+        
+        if self.classification:
+            return point_data, cls_index
+        else:
+            return point_data, seg
+ 
+ 
+    def __len__(self):
+        return len(self.datapath) """
+
     def __init__(self,
                  root,
                  npoints=2500,

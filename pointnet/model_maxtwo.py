@@ -147,7 +147,7 @@ class PointNetfeat(nn.Module):
         # print('x.view',x.size())#(32,1024)
         # print('z.view',z.size())
         if self.global_feat:
-            return x, trans, trans_feat
+            return c, trans, trans_feat
         else:
             #x = x.view(-1, 1024, 1).repeat(1, 1, n_pts)
             # values = values.view(-1, 2048, 1).repeat(1, 1, n_pts)
@@ -162,10 +162,18 @@ class PointNetCls(nn.Module):
         super(PointNetCls, self).__init__()
         self.feature_transform = feature_transform
         self.feat = PointNetfeat(global_feat=True, feature_transform=feature_transform)
+
+        #add
+        self.fca = nn.Linear(2048, 1024)
+
         self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, k)
         self.dropout = nn.Dropout(p=0.3)
+
+        #add
+        self.bna = nn.BatchNorm1d(1024)
+
         self.bn1 = nn.BatchNorm1d(512)
         self.bn2 = nn.BatchNorm1d(256)
         self.relu = nn.ReLU()
@@ -173,6 +181,10 @@ class PointNetCls(nn.Module):
     def forward(self, x):
         x, trans, trans_feat = self.feat(x)
         # print('maxpool x:',x.size())
+
+        #add
+        x = F.relu(self.bna(self.fca(x)))
+
         x = F.relu(self.bn1(self.fc1(x)))
         x = F.relu(self.bn2(self.dropout(self.fc2(x))))
         x = self.fc3(x)
@@ -206,7 +218,7 @@ class PointNetDenseCls(nn.Module):
         # print('seg:',x.size())#(32,1088,2500)
 
         #       add
-        x = F.relu(self.bna(self.conva(x)))
+        # x = F.relu(self.bna(self.conva(x)))
 
         x = F.relu(self.bn1(self.conv1(x)))
         # print('seg:',x.size())#(32,512,2500)

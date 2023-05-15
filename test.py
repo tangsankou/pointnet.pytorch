@@ -5,8 +5,28 @@ import torch.utils.data
 from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
+import json
 
-x = torch.rand(6,4,4)
+a =np.array([[[1,2,3],[4,5,6]],[[7,8,9][10,11,12]],[[2,4,6],[1,3,5]]])
+print(a[:,[0,2]])
+
+""" fname_train = '/root/pointnet.pytorch/scripts/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_train_file_list.json' 
+filelist_train = json.load(open(fname_train, 'r'))
+i=0
+for file in filelist_train:
+    i=i+1
+    _, category, uuid = file.split('/')
+print(i)
+
+fname_test = '/root/pointnet.pytorch/scripts/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_test_file_list.json' 
+filelist_test = json.load(open(fname_test, 'r'))
+j=0
+for file in filelist_test:
+    j=j+1
+    __, categoryy, uuidd = file.split('/')
+print(j) """
+
+""" x = torch.rand(6,4,4)
 print("x.size:",x.size())
 print("x:",x)
 x=x.topk(2, dim=2, largest=True, sorted=False)[0]
@@ -32,7 +52,7 @@ print("c.view=",c)
 print("d.size:",d.size())
 print("d:",d)
 
-""" values0=x.topk(k=1, dim=0, sorted=False)[0]
+ values0=x.topk(k=1, dim=0, sorted=False)[0]
 print("values0.size:",values0.size())
 print("values0=:",values0)
 
@@ -42,5 +62,5 @@ print("values1=:",values1)
 
 values2=x.topk(k=1, dim=2, sorted=False)[0]
 print("values2.size:",values2.size())
-print("values2=:",values2) """
-print("no problem")
+print("values2=:",values2) 
+print("no problem") """
