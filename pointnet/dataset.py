@@ -149,7 +149,7 @@ class ShapeNetDataset(data.Dataset):
         point_set = torch.from_numpy(point_set)#转换成tensor
         seg = torch.from_numpy(seg)
         cls = torch.from_numpy(np.array([cls]).astype(np.int64))#cls为对应的代号,比如Airplane对应0
-        print("cls:",cls)
+        # print("cls:",cls)
         # print("type(seg):",type(seg))
 
         if self.classification:

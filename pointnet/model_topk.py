@@ -116,75 +116,33 @@ class PointNetfeat(nn.Module):
             trans_feat = None
 
         pointfeat = x
-        # print('pointfeat:',pointfeat.size())
         x = F.relu(self.bn2(self.conv2(x)))
         x = self.bn3(self.conv3(x))
-        #maxpool
-        # values = x.topk(2, dim=2, largest=True, sorted=False)[0]
-        a, b = torch.chunk(x.topk(2, dim=2, largest=True, sorted=False)[0], 2, dim=2)
-        c = torch.cat([a,b], dim=1)
-        c = c.view(-1, 2048)
-        # print("c.size:",c.size())
-        # print("values1:",values.size())#(32,1024,2)
-        # values = values.view(-1, 2048)
-        # print("values.size",values.size())
-        # print("values2:",values.size())#(32,2048)
-        # add
-        #y = x
-        #y[y==torch.max(y,2,keepdim=True)[0]]=0#把最大值置0
-        # z=torch.max(y, 2, keepdim=True)[0]#取此时的最大即第二大
-        # z=z.view(-1, 1024)
-        #end
-
-        # print('before maxpool',x.size())#(32,1024,2500)
-        # x = torch.max(x, 2, keepdim=True)[0] 
-        # print('after maxpool',x.size())#(32,1024,1)
-        # print('z:',z.size())
-        #torch.cat([x, pointfeat], 1)
-        # print("xxx:",x.size())
-        # x = x.view(-1, 1024)
-        # print("xxxx:",x.size())
-        # print('x.view',x.size())#(32,1024)
-        # print('z.view',z.size())
+        # x = torch.max(x, 2, keepdim=True)[0]
+        ######tk
+        x = torch.mean(x.topk(1, dim=2, largest=True, sorted=False)[0], dim=2)
+        x = x.view(-1, 1024)
         if self.global_feat:
-            return c, trans, trans_feat
+            return x, trans, trans_feat
         else:
-            #x = x.view(-1, 1024, 1).repeat(1, 1, n_pts)
-            # values = values.view(-1, 2048, 1).repeat(1, 1, n_pts)
-            c = c.view(-1, 2048, 1).repeat(1, 1, n_pts)
-            # print("vvv:",values.size())
-            # print("xxxxx:",x.size())
-            # z = z.view(-1, 1024, 1).repeat(1, 1, n_pts) # add
-            return torch.cat([c, pointfeat], 1), trans, trans_feat
+            x = x.view(-1, 1024, 1).repeat(1, 1, n_pts)
+            return torch.cat([x, pointfeat], 1), trans, trans_feat
 
 class PointNetCls(nn.Module):
     def __init__(self, k=2, feature_transform=False):
         super(PointNetCls, self).__init__()
         self.feature_transform = feature_transform
         self.feat = PointNetfeat(global_feat=True, feature_transform=feature_transform)
-
-        #add
-        # self.fca = nn.Linear(2048, 1024)
-
-        self.fc1 = nn.Linear(2048, 512)
+        self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, k)
         self.dropout = nn.Dropout(p=0.3)
-
-        #add
-        # self.bna = nn.BatchNorm1d(1024)
-
         self.bn1 = nn.BatchNorm1d(512)
         self.bn2 = nn.BatchNorm1d(256)
         self.relu = nn.ReLU()
 
     def forward(self, x):
         x, trans, trans_feat = self.feat(x)
-        # print('maxpool x:',x.size())
-
-        #add
-        # x = F.relu(self.bna(self.fca(x)))
-
         x = F.relu(self.bn1(self.fc1(x)))
         x = F.relu(self.bn2(self.dropout(self.fc2(x))))
         x = self.fc3(x)
@@ -197,16 +155,10 @@ class PointNetDenseCls(nn.Module):
         self.k = k
         self.feature_transform=feature_transform
         self.feat = PointNetfeat(global_feat=False, feature_transform=feature_transform)
-
-        self.conva = torch.nn.Conv1d(2112, 1024, 1) # add
-
-        self.conv1 = torch.nn.Conv1d(1024, 512, 1)#changed
+        self.conv1 = torch.nn.Conv1d(1088, 512, 1)
         self.conv2 = torch.nn.Conv1d(512, 256, 1)
         self.conv3 = torch.nn.Conv1d(256, 128, 1)
         self.conv4 = torch.nn.Conv1d(128, self.k, 1)
-
-        self.bna = nn.BatchNorm1d(1024) # add
-
         self.bn1 = nn.BatchNorm1d(512)
         self.bn2 = nn.BatchNorm1d(256)
         self.bn3 = nn.BatchNorm1d(128)
@@ -215,13 +167,7 @@ class PointNetDenseCls(nn.Module):
         batchsize = x.size()[0]
         n_pts = x.size()[2]
         x, trans, trans_feat = self.feat(x)
-        # print('seg:',x.size())#(32,1088,2500)
-
-        #       add
-        # x = F.relu(self.bna(self.conva(x)))
-
         x = F.relu(self.bn1(self.conv1(x)))
-        # print('seg:',x.size())#(32,512,2500)
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
         x = self.conv4(x)
@@ -230,7 +176,6 @@ class PointNetDenseCls(nn.Module):
         x = x.view(batchsize, n_pts, self.k)
         return x, trans, trans_feat
 
-#Orthogonalize the feature transform matrix
 def feature_transform_regularizer(trans):
     d = trans.size()[1]
     batchsize = trans.size()[0]

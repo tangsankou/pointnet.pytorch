@@ -7,8 +7,40 @@ import numpy as np
 import torch.nn.functional as F
 import json
 
+batchsize = 5
+x=torch.rand(batchsize,9)
+print("x:",x)
+iden = Variable(torch.from_numpy(np.array([1, 0, 0, 0, 1, 0, 0, 0, 1]).astype(np.float32))).view(1, 9).repeat(
+            batchsize, 1)
+print("iden.shape:",iden.shape)
+print("iden:",iden)
+x=x+iden
+print("x+iden:",x)
+x=x.view(-1,3,3)
+print("x.view:",x)
+
+""" k=5
+x=torch.rand(1,3,8)
+print(type(x))
+print("x:",x)
+y=x.topk(k, dim=2, largest=True, sorted=False)[0]
+print("y:",y)
+z=torch.mean(x.topk(k, dim=2, largest=True, sorted=False)[0], dim=2)
+print("z:",z) """
+
+""" names = ["A","B","C","D","E","F","G","H","I","J","K"]
+for epoch in range(10):
+    print("-----epoch------:",epoch)
+    for index,value in enumerate(names,0):
+        print(f'{index}: {value}')
+        if index%3 ==0:
+            print("---next---")
+            i,v = next(enumerate(names,0))
+            print(f'{i}: {v}')
+            print("---end next---") """
+
 """ a =np.array([[[1,2,3],[4,5,6]],[[7,8,9][10,11,12]],[[2,4,6],[1,3,5]]])
-print(a[:,[0,2]]) """
+print(a[:,[0,2]])
 
 fname_train = '/root/autodl-tmp/shapenetcore_partanno_segmentation_benchmark_v0/train_test_split/shuffled_train_file_list.json' 
 filelist_train = json.load(open(fname_train, 'r'))
@@ -24,7 +56,7 @@ j=0
 for file in filelist_test:
     j=j+1
     _, category, uidd = file.split('/')
-print("len(test):",j)#2874
+print("len(test):",j)#2874 """
 
 """ x = torch.rand(6,4,4)
 print("x.size:",x.size())
