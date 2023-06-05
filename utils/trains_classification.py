@@ -148,12 +148,12 @@ for epoch in range(opt.nepoch):
             io.cprint('[%d: %d/%d] train loss: %f accuracy: %f' % (epoch, i, num_batch, loss.item(), correct.item() / float(opt.batchSize)))
     scheduler.step()
 
-        if epoch!=0 and epoch % 10 == 0:
-            total_correct = 0
-            total_testset = 0
-            classifier = classifier.eval()
-            with torch.no_grad():
-                j, data = enumerate(testdataloader, 0)
+    if epoch!=0 and epoch % 10 == 0:
+        total_correct = 0
+        total_testset = 0
+        classifier = classifier.eval()
+        with torch.no_grad():
+            for j, data in enumerate(testdataloader):
                 points, target = data
                 target = target[:, 0]
                 points = points.transpose(2, 1)
@@ -169,7 +169,7 @@ for epoch in range(opt.nepoch):
 
     # torch.save(classifier.state_dict(), '%s/cls_model_%d.pth' % (opt.outf, epoch))
     #add
-    if epoch!=0 and epoch % 9 == 0:
+    if epoch!=0 and epoch % 10 == 0:
         save_model(classifier, opt, 'model')
 save_model(classifier, opt, 'model_final')
 #end
