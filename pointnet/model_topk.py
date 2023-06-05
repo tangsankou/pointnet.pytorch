@@ -120,7 +120,7 @@ class PointNetfeat(nn.Module):
         x = self.bn3(self.conv3(x))
         # x = torch.max(x, 2, keepdim=True)[0]
         ######tk
-        x = torch.mean(x.topk(1, dim=2, largest=True, sorted=False)[0], dim=2)
+        x = torch.mean(x.topk(3, dim=2, largest=True, sorted=False)[0], dim=2)
         x = x.view(-1, 1024)
         if self.global_feat:
             return x, trans, trans_feat

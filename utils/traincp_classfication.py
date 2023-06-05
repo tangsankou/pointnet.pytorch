@@ -7,7 +7,7 @@ import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
 from pointnet.dataset import ShapeNetDataset, ModelNetDataset
-from pointnet.model_maxtwo import PointNetCls, feature_transform_regularizer
+from pointnet.model import PointNetCls, feature_transform_regularizer
 import torch.nn.functional as F
 from tqdm import tqdm
 
@@ -33,7 +33,7 @@ print(opt)
 blue = lambda x: '\033[94m' + x + '\033[0m'
 
 # opt.manualSeed = random.randint(1, 10000)  # fix seed
-opt.manualSeed = 6416
+opt.manualSeed = 5326
 print("Random Seed: ", opt.manualSeed)
 random.seed(opt.manualSeed)
 torch.manual_seed(opt.manualSeed)

@@ -7,7 +7,7 @@ import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
 from pointnet.dataset import ShapeNetDataset, ModelNetDataset
-from pointnet.model import PointNetCls, feature_transform_regularizer
+from pointnet.model_topk import PointNetCls, feature_transform_regularizer
 import torch.nn.functional as F
 from tqdm import tqdm
 from utils.io import IOStream, load_model, save_model
@@ -62,7 +62,7 @@ else:
     io.cprint('Using CPU')
 #end
 
-io.cprint("Random Seed: ", opt.manualSeed)
+io.cprint('Random Seed: {}'.format(opt.manualSeed))
 
 if opt.dataset_type == 'shapenet':
     dataset = ShapeNetDataset(
@@ -106,14 +106,14 @@ testdataloader = torch.utils.data.DataLoader(
 # print("len(dataset):",len(dataset))
 # print("len(test_dataset):", len(test_dataset))
 num_classes = len(dataset.classes)
-io.cprint('classes:', num_classes)
+io.cprint('classes:{}'.format(num_classes))
 
 """ try:
     os.makedirs(opt.outf)
 except OSError:
     pass """
-
-classifier = PointNetCls(k=num_classes, feature_transform=opt.feature_transform)
+device = torch.device("cuda" if opt.cuda else "cpu")
+classifier = PointNetCls(k=num_classes, feature_transform=opt.feature_transform).to(device)
 
 if opt.model != '':
     classifier = load_model(args, classifier)
@@ -125,7 +125,7 @@ scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
 # classifier.cuda()
 
 num_batch = len(dataset) / opt.batchSize
-io.cprint("num_batch",num_batch)
+io.cprint('num_batch:{}'.format(num_batch))
 
 for epoch in range(opt.nepoch):
     #scheduler.step()
@@ -158,14 +158,14 @@ for epoch in range(opt.nepoch):
                 target = target[:, 0]
                 points = points.transpose(2, 1)
                 points, target = points.cuda(), target.cuda()
-                optimizer.step()
+                optimizer.zero_grad()
                 pred, _, _ = classifier(points)
                 loss = F.nll_loss(pred, target)
                 pred_choice = pred.data.max(1)[1]
                 correct = pred_choice.eq(target.data).cpu().sum()
                 total_correct += correct.item()
                 total_testset += points.size()[0]
-            io.cprint('[%d: ] %s loss: %f accuracy: %f' % (epoch, blue('test'), loss.item(), total_correct / float(total_testset)))
+        io.cprint('[%d: ] %s loss: %f accuracy: %f' % (epoch, blue('test'), loss.item(), total_correct / float(total_testset)))
 
     # torch.save(classifier.state_dict(), '%s/cls_model_%d.pth' % (opt.outf, epoch))
     #add
