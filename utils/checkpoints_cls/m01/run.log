@@ -1,0 +1,8 @@
+Using GPU : 0 from 4 devices
+Random Seed: 8543
+classes:40
+num_batch:307.59375
+[0: 100/307] train loss: 1.965125 accuracy: 0.562500
+[0: 200/307] train loss: 1.820048 accuracy: 0.437500
+[0: 300/307] train loss: 1.854730 accuracy: 0.562500
+[0: ] [94mtest[0m loss: 2.329580 accuracy: 0.441248

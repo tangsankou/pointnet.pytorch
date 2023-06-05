@@ -1,0 +1,42 @@
+Using GPU : 3 from 4 devices
+Using GPU : 3 from 4 devices
+Random Seed: 8543
+classes:40
+num_batch:307.59375
+Using GPU : 3 from 4 devices
+Random Seed: 8543
+classes:40
+num_batch:307.59375
+Using GPU : 3 from 4 devices
+Random Seed: 8543
+classes:40
+num_batch:307.59375
+Using GPU : 3 from 4 devices
+Random Seed: 8543
+classes:40
+num_batch:307.59375
+Using GPU : 3 from 4 devices
+Random Seed: 8543
+classes:40
+num_batch:656.2
+[0: 30/656] train loss: 3.267514 accuracy: 0.066667
+[0: 60/656] train loss: 3.581528 accuracy: 0.066667
+[0: 90/656] train loss: 3.137469 accuracy: 0.333333
+[0: 120/656] train loss: 2.868835 accuracy: 0.200000
+[0: 150/656] train loss: 2.392540 accuracy: 0.333333
+[0: 180/656] train loss: 3.168521 accuracy: 0.200000
+[0: 210/656] train loss: 3.105337 accuracy: 0.266667
+[0: 240/656] train loss: 3.089771 accuracy: 0.200000
+[0: 270/656] train loss: 2.525312 accuracy: 0.200000
+[0: 300/656] train loss: 2.768620 accuracy: 0.133333
+[0: 330/656] train loss: 1.886918 accuracy: 0.600000
+[0: 360/656] train loss: 2.075189 accuracy: 0.466667
+[0: 390/656] train loss: 1.904945 accuracy: 0.533333
+[0: 420/656] train loss: 1.992244 accuracy: 0.466667
+[0: 450/656] train loss: 2.341556 accuracy: 0.333333
+[0: 480/656] train loss: 2.785374 accuracy: 0.466667
+[0: 510/656] train loss: 2.332139 accuracy: 0.400000
+[0: 540/656] train loss: 2.624387 accuracy: 0.400000
+[0: 570/656] train loss: 2.307889 accuracy: 0.400000
+[0: 600/656] train loss: 2.478355 accuracy: 0.400000
+[0: 630/656] train loss: 2.100657 accuracy: 0.266667
