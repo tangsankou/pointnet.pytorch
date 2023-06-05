@@ -144,11 +144,11 @@ for epoch in range(opt.nepoch):
         optimizer.step()
         pred_choice = pred.data.max(1)[1]
         correct = pred_choice.eq(target.data).cpu().sum()
-        if i != 0 and i % 30 == 0:
+        if i != 0 and i % 100 == 0:
             io.cprint('[%d: %d/%d] train loss: %f accuracy: %f' % (epoch, i, num_batch, loss.item(), correct.item() / float(opt.batchSize)))
     scheduler.step()
 
-        if epoch % 9 == 0:
+        if epoch!=0 and epoch % 10 == 0:
             total_correct = 0
             total_testset = 0
             classifier = classifier.eval()
@@ -169,7 +169,7 @@ for epoch in range(opt.nepoch):
 
     # torch.save(classifier.state_dict(), '%s/cls_model_%d.pth' % (opt.outf, epoch))
     #add
-    if epoch % 9 == 0:
+    if epoch!=0 and epoch % 9 == 0:
         save_model(classifier, opt, 'model')
 save_model(classifier, opt, 'model_final')
 #end
